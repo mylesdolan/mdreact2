@@ -65,10 +65,50 @@ class Fb extends Component {
                  self.buildFeed(response);
                 }
             });
-        })
+        });
+
+        this.download();
+    }
+
+    download(){
+        const downloadUrl="https://scontent.xx.fbcdn.net/v/t1.0-9/s720x720/69616027_2235481496560508_6254272110181482496_o.jpg?_nc_cat=100&_nc_oc=AQnPcwBKhgtkqy_JndRIhOTvidYpExjo16FSCCQJDfQZuXCb7Wb0Trx4ESNcpw5OxRg&_nc_ht=scontent.xx&oh=51e5b3962fbd0a4161ff4d2f4aa03895&oe=5DF6BADA";
+        var postData = new FormData();
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', downloadUrl, true);
+        xhr.responseType = 'blob';
+        xhr.onload = function (e) {
+            var blob = xhr.response;
+            this.saveOrOpenBlob(blob);
+        }.bind(this);
+       xhr.send(postData);
+        console.log('postdata',postData);
+
 
 
     }
+
+
+
+    saveOrOpenBlob(blob) {
+        console.log("blob",blob);
+      //  var assetRecord = this.getAssetRecord();
+        const fileName = 'Test.mp4';
+        const tempEl = document.createElement("a");
+        document.body.appendChild(tempEl);
+
+        //tempEl.style = "display: none";
+        const url = window.URL.createObjectURL(blob);
+        console.log('url',url);
+        tempEl.href = url;
+
+        tempEl.download = fileName;
+      //  document.getElementById('thisawlthing').appendChild(tempEl);
+        tempEl.click();
+        window.URL.revokeObjectURL(url);
+        console.log('IM HERE');
+    }
+
+
 
     // This is called with the results from from FB.getLoginStatus().
     statusChangeCallback(response) {
@@ -145,6 +185,7 @@ class Fb extends Component {
                             <div id="status"></div>
                             <div id="profile"></div>
                             <div id="feed"></div>
+                            <div id="thisawlthing"></div>
                         </Col>
                     </Row>
                 </Container>

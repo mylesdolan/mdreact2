@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 //import { Grid, Row, Col } from 'react-bootstrap';
 //import Grid from "react-bootstrap";
+import asset from '../Assets/tester.jpg'
 import { Container,Row, Col } from 'react-bootstrap';
 class Fb extends Component {
     constructor(props) {
@@ -71,7 +72,9 @@ class Fb extends Component {
     }
 
     download(){
+        return new Promise((resolve, reject) => {
         const downloadUrl="https://scontent.xx.fbcdn.net/v/t1.0-9/s720x720/69616027_2235481496560508_6254272110181482496_o.jpg?_nc_cat=100&_nc_oc=AQnPcwBKhgtkqy_JndRIhOTvidYpExjo16FSCCQJDfQZuXCb7Wb0Trx4ESNcpw5OxRg&_nc_ht=scontent.xx&oh=51e5b3962fbd0a4161ff4d2f4aa03895&oe=5DF6BADA";
+       // const reading = $.Deferred();
         var postData = new FormData();
         var xhr = new XMLHttpRequest();
         xhr.open('GET', downloadUrl, true);
@@ -82,7 +85,7 @@ class Fb extends Component {
         }.bind(this);
        xhr.send(postData);
         console.log('postdata',postData);
-
+        });
 
 
     }
@@ -90,6 +93,7 @@ class Fb extends Component {
 
 
     saveOrOpenBlob(blob) {
+        //this.imageElement = document.element.querySelector("img");
         console.log("blob",blob);
       //  var assetRecord = this.getAssetRecord();
         const fileName = 'Test.mp4';
@@ -99,11 +103,24 @@ class Fb extends Component {
         //tempEl.style = "display: none";
         const url = window.URL.createObjectURL(blob);
         console.log('url',url);
+       // this.imageElement.src = url;
+        //document.element.querySelector("img").src=url;
         tempEl.href = url;
 
         tempEl.download = fileName;
       //  document.getElementById('thisawlthing').appendChild(tempEl);
+       // document.element.querySelector("img").src=tempEl;
+       // document.element.querySelector("img").src=asset;
+      //  document.getElementById('img').querySelector<HTMLInputElement>('.src').value=asset;
+        //document.getElementById('img').src=asset;
+        // asset=document.getElementById('img') as HTMLImageElement;
+       // document.getElementById('img').setAttribute('src',asset);
+        document.getElementById('img').setAttribute('src',url);
+
         tempEl.click();
+
+
+
         window.URL.revokeObjectURL(url);
         console.log('IM HERE');
     }
@@ -182,10 +199,14 @@ class Fb extends Component {
                     <Row>
                         <Col xs={12}>
                             <a href="#" onClick={this.handleClick} onlogin={this.checkLoginState}>Login</a>
+                            {/*  <img src={asset} style={{ height: '300px',width: '300px', border: '1px'}}></img>*/}
+                            <img src={'https://scontent.xx.fbcdn.net/v/t1.0-9/s720x720/69616027_2235481496560508_6254272110181482496_o.jpg?_nc_cat=100&_nc_oc=AQnPcwBKhgtkqy_JndRIhOTvidYpExjo16FSCCQJDfQZuXCb7Wb0Trx4ESNcpw5OxRg&_nc_ht=scontent.xx&oh=51e5b3962fbd0a4161ff4d2f4aa03895&oe=5DF6BADA'}
+                            id="img" style={{ height: '300px',width: '300px', border: '1px'}}></img>
                             <div id="status"></div>
                             <div id="profile"></div>
                             <div id="feed"></div>
                             <div id="thisawlthing"></div>
+
                         </Col>
                     </Row>
                 </Container>

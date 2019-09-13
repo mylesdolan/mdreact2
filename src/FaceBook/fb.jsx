@@ -67,65 +67,133 @@ class Fb extends Component {
                 }
             });
         });
-
-        this.download();
+        this.download2();
+//        this.download();
     }
 
+    loadXHR(url) {
+
+        return new Promise(function(resolve, reject) {
+            try {
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", url);
+                xhr.responseType = "blob";
+                xhr.onerror = function() {reject("Network error.")};
+                xhr.onload = function() {
+                    if (xhr.status === 200) {resolve(xhr.response)}
+                    else {reject("Loading error:" + xhr.statusText)}
+                };
+                xhr.send();
+            }
+            catch(err) {reject(err.message)}
+        });
+    }
+
+
+
+    download2(){
+        this.loadXHR("https://scontent.xx.fbcdn.net/v/t1.0-9/s720x720/69616027_2235481496560508_6254272110181482496_o.jpg?_nc_cat=100&_nc_oc=AQnPcwBKhgtkqy_JndRIhOTvidYpExjo16FSCCQJDfQZuXCb7Wb0Trx4ESNcpw5OxRg&_nc_ht=scontent.xx&oh=51e5b3962fbd0a4161ff4d2f4aa03895&oe=5DF6BADA").then(function(blob) {
+            console.log('newblob',blob);
+            document.getElementById('img').setAttribute('src',blob);
+        });
+
+    }
+
+
+
     download(){
-        return new Promise((resolve, reject) => {
+
+       // https://stackoverflow.com/questions/50248329/fetch-image-from-api
+        var outside;
+     //   return new Promise((resolve, reject) => {
         const downloadUrl="https://scontent.xx.fbcdn.net/v/t1.0-9/s720x720/69616027_2235481496560508_6254272110181482496_o.jpg?_nc_cat=100&_nc_oc=AQnPcwBKhgtkqy_JndRIhOTvidYpExjo16FSCCQJDfQZuXCb7Wb0Trx4ESNcpw5OxRg&_nc_ht=scontent.xx&oh=51e5b3962fbd0a4161ff4d2f4aa03895&oe=5DF6BADA";
-       // const reading = $.Deferred();
+       fetch('https://scontent.xx.fbcdn.net/v/t1.0-9/s720x720/69616027_2235481496560508_6254272110181482496_o.jpg?_nc_cat=100&_nc_oc=AQnPcwBKhgtkqy_JndRIhOTvidYpExjo16FSCCQJDfQZuXCb7Wb0Trx4ESNcpw5OxRg&_nc_ht=scontent.xx&oh=51e5b3962fbd0a4161ff4d2f4aa03895&oe=5DF6BADA')
+           .then(response => response.blob())
+           .then(data => {
+               outside=URL.createObjectURL(data);
+               console.log('outside',outside);
+
+           })
+           .then(x => {
+              this.saveBlob(outside);
+           })
+       ;
+
+
+        console.log('after fetch');
+        console.log('after after fetch');
+
+        // const reading = $.Deferred();
         var postData = new FormData();
         var xhr = new XMLHttpRequest();
         xhr.open('GET', downloadUrl, true);
         xhr.responseType = 'blob';
         xhr.onload = function (e) {
             var blob = xhr.response;
-            this.saveOrOpenBlob(blob);
+        //    this.saveOrOpenBlob(blob);
         }.bind(this);
        xhr.send(postData);
         console.log('postdata',postData);
-        });
+       // endof promise thing });
 
 
     }
 
+saveBlob(outside)
+{
+    let arr = outside.split(','), mime = arr[0].match(/:(.*?);/)[1];
+      let bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while(n--) {
+        u8arr[n] = bstr.charCodeAt(n);
 
-
-    saveOrOpenBlob(blob) {
-        //this.imageElement = document.element.querySelector("img");
-        console.log("blob",blob);
-      //  var assetRecord = this.getAssetRecord();
-        const fileName = 'Test.mp4';
-        const tempEl = document.createElement("a");
-        document.body.appendChild(tempEl);
-
-        //tempEl.style = "display: none";
-        const url = window.URL.createObjectURL(blob);
-        console.log('url',url);
-       // this.imageElement.src = url;
-        //document.element.querySelector("img").src=url;
-        tempEl.href = url;
-
-        tempEl.download = fileName;
-      //  document.getElementById('thisawlthing').appendChild(tempEl);
-       // document.element.querySelector("img").src=tempEl;
-       // document.element.querySelector("img").src=asset;
-      //  document.getElementById('img').querySelector<HTMLInputElement>('.src').value=asset;
-        //document.getElementById('img').src=asset;
-        // asset=document.getElementById('img') as HTMLImageElement;
-       // document.getElementById('img').setAttribute('src',asset);
-        document.getElementById('img').setAttribute('src',url);
-
-        tempEl.click();
-
-
-
-        window.URL.revokeObjectURL(url);
-        console.log('IM HERE');
     }
+    const blobby =  new Blob([u8arr], {type:mime});
+
+    console.log ('second',outside);
+    let reader = new FileReader();
+
+    reader.onloadend = function() {
+        let base64data = reader.result;
+        console.log('image',base64data);
+    };
+    reader.readAsDataURL(blobby);
+}
+
+    /*
+       saveOrOpenBlob(blob) {
+           //this.imageElement = document.element.querySelector("img");
+           console.log("blob",blob);
+         //  var assetRecord = this.getAssetRecord();
+           const fileName = 'Test.mp4';
+           const tempEl = document.createElement("a");
+           document.body.appendChild(tempEl);
+
+           //tempEl.style = "display: none";
+           const url = window.URL.createObjectURL(blob);
+           console.log('url',url);
+          // this.imageElement.src = url;
+           //document.element.querySelector("img").src=url;
+           tempEl.href = url;
+
+           tempEl.download = fileName;
+         //  document.getElementById('thisawlthing').appendChild(tempEl);
+          // document.element.querySelector("img").src=tempEl;
+          // document.element.querySelector("img").src=asset;
+         //  document.getElementById('img').querySelector<HTMLInputElement>('.src').value=asset;
+           //document.getElementById('img').src=asset;
+           // asset=document.getElementById('img') as HTMLImageElement;
+          // document.getElementById('img').setAttribute('src',asset);
+           document.getElementById('img').setAttribute('src',url);
+
+           tempEl.click();
 
 
+
+           window.URL.revokeObjectURL(url);
+           console.log('IM HERE');
+       }
+
+   */
 
     // This is called with the results from from FB.getLoginStatus().
     statusChangeCallback(response) {
@@ -199,9 +267,10 @@ class Fb extends Component {
                     <Row>
                         <Col xs={12}>
                             <a href="#" onClick={this.handleClick} onlogin={this.checkLoginState}>Login</a>
+                            <img id="img" style={{ height: '300px',width: '300px', border: '1px'}}></img>
                             {/*  <img src={asset} style={{ height: '300px',width: '300px', border: '1px'}}></img>*/}
-                            <img src={'https://scontent.xx.fbcdn.net/v/t1.0-9/s720x720/69616027_2235481496560508_6254272110181482496_o.jpg?_nc_cat=100&_nc_oc=AQnPcwBKhgtkqy_JndRIhOTvidYpExjo16FSCCQJDfQZuXCb7Wb0Trx4ESNcpw5OxRg&_nc_ht=scontent.xx&oh=51e5b3962fbd0a4161ff4d2f4aa03895&oe=5DF6BADA'}
-                            id="img" style={{ height: '300px',width: '300px', border: '1px'}}></img>
+                            {/*  <img src={'https://scontent.xx.fbcdn.net/v/t1.0-9/s720x720/69616027_2235481496560508_6254272110181482496_o.jpg?_nc_cat=100&_nc_oc=AQnPcwBKhgtkqy_JndRIhOTvidYpExjo16FSCCQJDfQZuXCb7Wb0Trx4ESNcpw5OxRg&_nc_ht=scontent.xx&oh=51e5b3962fbd0a4161ff4d2f4aa03895&oe=5DF6BADA'}
+                            id="img" style={{ height: '300px',width: '300px', border: '1px'}}></img>*/}
                             <div id="status"></div>
                             <div id="profile"></div>
                             <div id="feed"></div>

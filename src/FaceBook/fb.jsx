@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 //import Grid from "react-bootstrap";
 import asset from '../Assets/tester.jpg'
 import { Container,Row, Col } from 'react-bootstrap';
+import Navbar from './Navbar';
 
 import PicLoop from './picloop';
 
@@ -384,7 +385,7 @@ else{
 
         return (
             <main>
-
+                <Navbar />
                 <Container fluid>
                     <h1>
                         Facebook Login

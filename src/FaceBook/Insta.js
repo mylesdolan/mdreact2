@@ -47,7 +47,8 @@ console.log ("handleclicke");
             access_token: this.state.code,
             client_secret: 'bf7f60a691714565ae1f48db572ba296',
             grant_type: 'authorization_code',
-            redirect_uri: 'http://localhost:3000/Insta',
+            //redirect_uri: 'http://localhost:3000/Insta',
+            redirect_uri: 'https://shielded-badlands-64011.herokuapp.com/Insta',
             code: this.state.code
         };
 
